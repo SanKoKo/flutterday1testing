@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_day_1/search.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,55 +9,61 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      home: Body(),
+      home: Home(),
     );
   }
 }
 
-class Body extends StatelessWidget {
-  List<String> list = List.generate(100, (index) => 'This is index of $index');
-  List<String> sugList =
-      List.generate(10, (index) => 'This is index of $index');
+class Home extends StatelessWidget {
+  GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: MySearch(list, sugList));
-                },
-                icon: const Icon(Icons.search))
+       key: _key,
+      appBar: AppBar(
+        title: const Text('Material App Bar'),
+      ),
+      drawer: Drawer(
+       
+        child: ListView(
+          children: [
+            // DrawerHeader(child: Text('header')),
+            const UserAccountsDrawerHeader(
+                currentAccountPicture: CircleAvatar(
+                  child: Text("U"),
+                ),
+                otherAccountsPictures: [
+                  CircleAvatar(
+                    backgroundColor: Colors.amber,
+                    child: Text("A"),
+                  ),
+                  CircleAvatar(
+                    backgroundColor: Colors.red,
+                    child: Text("C"),
+                  ),
+                ],
+                accountName: Text('Accout name'),
+                accountEmail: Text('email@email.com')),
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              leading: const Icon(Icons.abc),
+              title: const Text('This is title 1'),
+            )
           ],
         ),
-        body: Column(
-          children: [
-            Autocomplete<String>(
-                optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) return const Iterable.empty();
-              return list
-                  .where((value) => value.contains(textEditingValue.text));
-            }),
-            Expanded(
-              child: ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text(index.toString()),
-                      ),
-                      title: Text(list[index]),
-                      subtitle: Text('Api ${index + 1}'),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ));
+      ),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              if (!_key.currentState!.isDrawerOpen) {
+                _key.currentState!.openDrawer();
+              }
+            },
+            child: const Text('Open drawer')),
+      ),
+    );
   }
 }
